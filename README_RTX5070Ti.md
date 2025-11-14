@@ -36,15 +36,26 @@ cd ../..
 
 #### Step 3: Install Dependencies
 
-**With Conda:**
+**With Conda (Recommended):**
 ```bash
+# Create conda environment (installs PyTorch and basic dependencies)
 conda env create -f environment.yml
 conda activate gaussian_splatting
+
+# Install CUDA extensions (must be done after PyTorch is installed)
+./install_extensions.sh
 ```
 
 **With pip:**
 ```bash
 pip install torch torchvision torchaudio plyfile tqdm opencv-python joblib
+
+# Apply patch first
+cd submodules/diff-gaussian-rasterization
+git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
+cd ../..
+
+# Install CUDA extensions
 pip install submodules/diff-gaussian-rasterization
 pip install submodules/simple-knn
 pip install submodules/fused-ssim

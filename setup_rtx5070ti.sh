@@ -21,6 +21,21 @@ echo "Installing dependencies..."
 if command -v conda &> /dev/null; then
     echo "Using conda environment..."
     conda env create -f environment.yml || conda env update -f environment.yml --prune
+
+    echo ""
+    echo "Now installing CUDA extensions..."
+    echo "Activating environment and installing extensions..."
+
+    # Activate and install CUDA extensions
+    eval "$(conda shell.bash hook)"
+    conda activate gaussian_splatting
+
+    pip install submodules/diff-gaussian-rasterization
+    pip install submodules/simple-knn
+    pip install submodules/fused-ssim
+
+    echo ""
+    echo "✓ Environment setup complete!"
     echo "Activate environment with: conda activate gaussian_splatting"
 else
     echo "Conda not found. Installing with pip..."
