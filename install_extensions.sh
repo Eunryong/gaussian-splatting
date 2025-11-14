@@ -6,14 +6,24 @@ set -e
 
 echo "Installing CUDA extensions for Gaussian Splatting..."
 
-# Apply patch if not already applied
-echo "Checking CUDA architecture patch..."
+# Apply patches if not already applied
+echo "Checking CUDA architecture patches..."
+
 cd submodules/diff-gaussian-rasterization
 if git apply --check ../../patches/diff-gaussian-rasterization-rtx5070ti.patch 2>/dev/null; then
     git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
-    echo "✓ Patch applied"
+    echo "✓ diff-gaussian-rasterization patch applied"
 else
-    echo "✓ Patch already applied or not needed"
+    echo "✓ diff-gaussian-rasterization patch already applied or not needed"
+fi
+cd ../..
+
+cd submodules/fused-ssim
+if git apply --check ../../patches/fused-ssim-rtx5070ti.patch 2>/dev/null; then
+    git apply ../../patches/fused-ssim-rtx5070ti.patch
+    echo "✓ fused-ssim patch applied"
+else
+    echo "✓ fused-ssim patch already applied or not needed"
 fi
 cd ../..
 

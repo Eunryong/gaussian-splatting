@@ -37,10 +37,14 @@ git clone --recursive -b claude/rtx5070ti-cuda-setup-01EFgBafrKajCxzZHu9Zcv8g ht
 cd gaussian-splatting
 ```
 
-#### Step 2: Apply CUDA Architecture Patch
+#### Step 2: Apply CUDA Architecture Patches
 ```bash
 cd submodules/diff-gaussian-rasterization
 git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
+cd ../..
+
+cd submodules/fused-ssim
+git apply ../../patches/fused-ssim-rtx5070ti.patch
 cd ../..
 ```
 
@@ -60,9 +64,13 @@ conda activate gaussian_splatting
 ```bash
 pip install torch torchvision torchaudio plyfile tqdm opencv-python joblib
 
-# Apply patch first
+# Apply patches first
 cd submodules/diff-gaussian-rasterization
 git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
+cd ../..
+
+cd submodules/fused-ssim
+git apply ../../patches/fused-ssim-rtx5070ti.patch
 cd ../..
 
 # Set CUDA architecture (required for RTX 5070 Ti)

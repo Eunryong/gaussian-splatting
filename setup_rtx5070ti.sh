@@ -5,14 +5,24 @@ set -e
 
 echo "Setting up Gaussian Splatting for RTX 5070 Ti..."
 
-# Apply patch to diff-gaussian-rasterization for newer GPU architectures
-echo "Applying CUDA architecture patch..."
+# Apply patches to submodules for newer GPU architectures
+echo "Applying CUDA architecture patches..."
+
 cd submodules/diff-gaussian-rasterization
 if git apply --check ../../patches/diff-gaussian-rasterization-rtx5070ti.patch 2>/dev/null; then
     git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
-    echo "✓ Patch applied successfully"
+    echo "✓ diff-gaussian-rasterization patch applied"
 else
-    echo "! Patch already applied or not needed"
+    echo "✓ diff-gaussian-rasterization patch already applied or not needed"
+fi
+cd ../..
+
+cd submodules/fused-ssim
+if git apply --check ../../patches/fused-ssim-rtx5070ti.patch 2>/dev/null; then
+    git apply ../../patches/fused-ssim-rtx5070ti.patch
+    echo "✓ fused-ssim patch applied"
+else
+    echo "✓ fused-ssim patch already applied or not needed"
 fi
 cd ../..
 
