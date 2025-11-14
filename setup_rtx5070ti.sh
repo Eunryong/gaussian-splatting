@@ -1,0 +1,42 @@
+#!/bin/bash
+# Setup script for RTX 5070 Ti (CUDA 12.6, Compute Capability 9.0)
+
+set -e
+
+echo "Setting up Gaussian Splatting for RTX 5070 Ti..."
+
+# Apply patch to diff-gaussian-rasterization for newer GPU architectures
+echo "Applying CUDA architecture patch..."
+cd submodules/diff-gaussian-rasterization
+if git apply --check ../../patches/diff-gaussian-rasterization-rtx5070ti.patch 2>/dev/null; then
+    git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
+    echo "✓ Patch applied successfully"
+else
+    echo "! Patch already applied or not needed"
+fi
+cd ../..
+
+# Install dependencies
+echo "Installing dependencies..."
+if command -v conda &> /dev/null; then
+    echo "Using conda environment..."
+    conda env create -f environment.yml || conda env update -f environment.yml --prune
+    echo "Activate environment with: conda activate gaussian_splatting"
+else
+    echo "Conda not found. Installing with pip..."
+    pip install torch torchvision torchaudio plyfile tqdm opencv-python joblib
+
+    echo "Installing CUDA extensions..."
+    pip install submodules/diff-gaussian-rasterization
+    pip install submodules/simple-knn
+    pip install submodules/fused-ssim
+fi
+
+echo ""
+echo "✓ Setup complete!"
+echo ""
+echo "To verify CUDA setup, run:"
+echo "  python -c 'import torch; print(f\"CUDA available: {torch.cuda.is_available()}\"); print(f\"CUDA version: {torch.version.cuda}\")'"
+echo ""
+echo "To start training:"
+echo "  python train.py -s <path_to_dataset>"
