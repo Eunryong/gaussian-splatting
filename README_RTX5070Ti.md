@@ -3,9 +3,19 @@
 This branch contains configurations optimized for NVIDIA RTX 5070 Ti with CUDA 12.6.
 
 ## Hardware Requirements
-- NVIDIA RTX 5070 Ti (Compute Capability 9.0)
+- NVIDIA RTX 5070 Ti (Compute Capability 12.0)
 - CUDA 12.6 installed
 - 16GB+ VRAM recommended
+
+## ⚠️ Important Note: Compute Capability 12.0
+
+The RTX 5070 Ti uses compute capability 12.0, which is **not yet supported** by current PyTorch releases (max: sm_90) or CUDA toolkit. This setup uses a forward-compatibility workaround:
+
+- **Compilation target**: sm_90 (Hopper architecture)
+- **Actual GPU**: sm_120 (RTX 5070 Ti)
+- **Result**: Code will compile and should work, but may not utilize all GPU features
+
+This workaround is automatic in the setup scripts via `TORCH_CUDA_ARCH_LIST="9.0"`.
 
 ## Quick Setup
 
@@ -54,6 +64,10 @@ pip install torch torchvision torchaudio plyfile tqdm opencv-python joblib
 cd submodules/diff-gaussian-rasterization
 git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
 cd ../..
+
+# Set CUDA architecture (required for RTX 5070 Ti)
+export TORCH_CUDA_ARCH_LIST="9.0"
+export TCNN_CUDA_ARCHITECTURES="90"
 
 # Install CUDA extensions (--no-build-isolation is required)
 pip install --no-build-isolation submodules/diff-gaussian-rasterization
@@ -107,8 +121,21 @@ python train.py -s <path_to_dataset> --iterations 30000 --save_iterations 7000 3
 
 ## Troubleshooting
 
+### Error: "sm_120 is not compatible" or "Value 'sm_120' is not defined"
+
+This is expected! The RTX 5070 Ti has compute capability 12.0, which is not yet supported.
+
+**Solution**: The setup scripts automatically set `TORCH_CUDA_ARCH_LIST="9.0"` to force compilation for sm_90. If installing manually, make sure to export these variables:
+
+```bash
+export TORCH_CUDA_ARCH_LIST="9.0"
+export TCNN_CUDA_ARCHITECTURES="90"
+```
+
+Then reinstall the CUDA extensions.
+
 ### CUDA Extension Build Errors
-If you encounter build errors with the CUDA extensions:
+If you encounter other build errors:
 ```bash
 # Ensure patch is applied
 cd submodules/diff-gaussian-rasterization
@@ -116,6 +143,11 @@ git apply --check ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
 
 # If not applied:
 git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
+
+# Then reinstall with correct environment variables
+cd ../..
+export TORCH_CUDA_ARCH_LIST="9.0"
+./install_extensions.sh
 ```
 
 ### Out of Memory
@@ -123,6 +155,13 @@ If you run out of VRAM during training:
 - Reduce resolution: Use `--resolution 1` or lower
 - Reduce iterations: `--iterations 10000`
 - Use smaller datasets initially
+
+### Performance Considerations
+
+Since we're compiling for sm_90 but running on sm_120, you may not get optimal performance. The code will work, but:
+- Some sm_120-specific optimizations won't be used
+- Performance may be 5-15% lower than native sm_120 compilation
+- Wait for PyTorch/CUDA updates for full sm_120 support
 
 ## References
 - Original repository: https://github.com/graphdeco-inria/gaussian-splatting

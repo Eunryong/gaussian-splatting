@@ -30,6 +30,11 @@ if command -v conda &> /dev/null; then
     eval "$(conda shell.bash hook)"
     conda activate gaussian_splatting
 
+    # Set CUDA architecture for RTX 5070 Ti (compute capability 12.0)
+    # Force compilation for sm_90 (Hopper) which should be forward compatible
+    export TORCH_CUDA_ARCH_LIST="9.0"
+    export TCNN_CUDA_ARCHITECTURES="90"
+
     pip install --no-build-isolation submodules/diff-gaussian-rasterization
     pip install --no-build-isolation submodules/simple-knn
     pip install --no-build-isolation submodules/fused-ssim
@@ -42,6 +47,10 @@ else
     pip install torch torchvision torchaudio plyfile tqdm opencv-python joblib
 
     echo "Installing CUDA extensions..."
+    # Set CUDA architecture for RTX 5070 Ti
+    export TORCH_CUDA_ARCH_LIST="9.0"
+    export TCNN_CUDA_ARCHITECTURES="90"
+
     pip install --no-build-isolation submodules/diff-gaussian-rasterization
     pip install --no-build-isolation submodules/simple-knn
     pip install --no-build-isolation submodules/fused-ssim
