@@ -18,14 +18,7 @@ else
 fi
 cd ../..
 
-cd submodules/fused-ssim
-if git apply --check ../../patches/fused-ssim-rtx5070ti.patch 2>/dev/null; then
-    git apply ../../patches/fused-ssim-rtx5070ti.patch
-    echo "✓ fused-ssim patch applied"
-else
-    echo "✓ fused-ssim patch already applied or not needed"
-fi
-cd ../..
+echo "✓ fused-ssim setup.py modified directly"
 
 # Set CUDA architecture for RTX 5070 Ti (compute capability 12.0)
 # Force compilation for sm_90 (Hopper) which should be forward compatible
