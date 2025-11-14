@@ -55,10 +55,10 @@ cd submodules/diff-gaussian-rasterization
 git apply ../../patches/diff-gaussian-rasterization-rtx5070ti.patch
 cd ../..
 
-# Install CUDA extensions
-pip install submodules/diff-gaussian-rasterization
-pip install submodules/simple-knn
-pip install submodules/fused-ssim
+# Install CUDA extensions (--no-build-isolation is required)
+pip install --no-build-isolation submodules/diff-gaussian-rasterization
+pip install --no-build-isolation submodules/simple-knn
+pip install --no-build-isolation submodules/fused-ssim
 ```
 
 ## What's Changed

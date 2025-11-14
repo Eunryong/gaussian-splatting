@@ -20,13 +20,13 @@ cd ../..
 # Install CUDA extensions
 echo ""
 echo "Installing diff-gaussian-rasterization..."
-pip install submodules/diff-gaussian-rasterization
+pip install --no-build-isolation submodules/diff-gaussian-rasterization
 
 echo "Installing simple-knn..."
-pip install submodules/simple-knn
+pip install --no-build-isolation submodules/simple-knn
 
 echo "Installing fused-ssim..."
-pip install submodules/fused-ssim
+pip install --no-build-isolation submodules/fused-ssim
 
 echo ""
 echo "✓ All CUDA extensions installed successfully!"

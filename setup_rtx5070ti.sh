@@ -30,9 +30,9 @@ if command -v conda &> /dev/null; then
     eval "$(conda shell.bash hook)"
     conda activate gaussian_splatting
 
-    pip install submodules/diff-gaussian-rasterization
-    pip install submodules/simple-knn
-    pip install submodules/fused-ssim
+    pip install --no-build-isolation submodules/diff-gaussian-rasterization
+    pip install --no-build-isolation submodules/simple-knn
+    pip install --no-build-isolation submodules/fused-ssim
 
     echo ""
     echo "✓ Environment setup complete!"
@@ -42,9 +42,9 @@ else
     pip install torch torchvision torchaudio plyfile tqdm opencv-python joblib
 
     echo "Installing CUDA extensions..."
-    pip install submodules/diff-gaussian-rasterization
-    pip install submodules/simple-knn
-    pip install submodules/fused-ssim
+    pip install --no-build-isolation submodules/diff-gaussian-rasterization
+    pip install --no-build-isolation submodules/simple-knn
+    pip install --no-build-isolation submodules/fused-ssim
 fi
 
 echo ""
